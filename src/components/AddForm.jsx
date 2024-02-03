@@ -1,5 +1,7 @@
 import { v4 } from "uuid";
 import { useDispatch } from "react-redux";
+import { addTodo } from "../redux/actions/todoActions";
+import axios from "axios";
 
 const AddForm = () => {
   const dispatch = useDispatch();
@@ -16,12 +18,12 @@ const AddForm = () => {
       created_at: new Date().toLocaleDateString(),
     };
 
+    axios.post("/todos", newTodo).then(() => {
+      dispatch(addTodo(newTodo));
+    });
+
     // console.log(newTodo)
 
-    dispatch({
-      type: "ADD_TODO",
-      payload: newTodo,
-    });
   };
 
   return (

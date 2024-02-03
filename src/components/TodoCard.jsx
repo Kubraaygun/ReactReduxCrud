@@ -2,16 +2,18 @@ import { useState } from "react";
 import Modal from "./Modal";
 import { useDispatch } from "react-redux";
 import { ActionTypes } from "../redux/actionTypes";
+import { removeTodo, updateTodo } from "../redux/actions/todoActions";
+import axios from "axios";
 
 const TodoCard = ({ todo }) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = () => {
-    dispatch({
-      type: ActionTypes.REMOVE_TODO,
-      payload: todo.id,
-    });
+    axios
+      .delete(`/todos/${todo.id}`)
+      .then(() => dispatch(removeTodo(todo.id)))
+      .catch(() => alert("silme isleminde bir sorun olustu"));
   };
 
   //store`daki todo`nun is_done degerini tersine cevir
@@ -19,10 +21,11 @@ const TodoCard = ({ todo }) => {
   const handleStatus = () => {
     const updated = { ...todo, is_done: !todo.is_done };
 
-    dispatch({
-      type: ActionTypes.UPDATE_TODO,
-      payload: updated,
-    });
+    axios
+      .put(`/todos/${todo.id}`, updated)
+      .then(() => dispatch(updateTodo(updated)));
+
+    dispatch(updateTodo(updated));
   };
 
   return (
